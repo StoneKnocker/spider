@@ -118,12 +118,7 @@ def get_date_num(url, pattern):
 if __name__ == '__main__':
     # urls = collect_urls()
     # logging.info("all urls: %s", urls)
-    # urls = all_urls
-    
-    response = session.get(first_page, headers=headers)
-    response.encoding = 'utf-8'
-    html = etree.HTML(response.text, etree.HTMLParser())
-    urls = html.xpath(day_href_xpath)
+    urls = all_urls
     
     # get_date_num(test_url, date_pattern)
     
