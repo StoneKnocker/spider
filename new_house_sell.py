@@ -7,7 +7,7 @@ import requests
 import csv
 
 from lxml import etree
-from common.config import LOG_FORMAT, DATE_FORMAT, log_dir, set_rand_ua
+from common.config import LOG_FORMAT, DATE_FORMAT, log_dir
 from bs4 import BeautifulSoup
 from mem.all_urls import all_urls
 
@@ -38,10 +38,12 @@ headers = {
 
 session = requests.Session()
 
+
 # 数据表格的链接列表
 def collect_urls():
     data_urls = []
-    for i in range(0, 92):
+    # 一共91页
+    for i in range(0, 2):
         url = base_page.format(i)
         if i == 0:
             url = first_page
@@ -53,7 +55,7 @@ def collect_urls():
         href_list = html.xpath(day_href_xpath)
         data_urls.extend(href_list)
         time.sleep(0.5)
-    
+
     return data_urls
 
 
@@ -79,7 +81,7 @@ def get_date_num(url, pattern):
     soup = BeautifulSoup(response.text, features='lxml')
     tables = soup.find_all('table')
     tbody = tables[0].tbody
-    
+
     # 比较新的数据 17行是合计， 也有18行是合计的
     tr_idx = 17
     while tr_idx <= 18:
@@ -94,7 +96,7 @@ def get_date_num(url, pattern):
     td1 = tr.find_all('td')[1]
     # 成交数量
     num = td1.text
-    
+
     # 日期
     date = None
     h2s = soup.find_all('h2')
@@ -119,15 +121,14 @@ if __name__ == '__main__':
     # urls = collect_urls()
     # logging.info("all urls: %s", urls)
     urls = all_urls
-    
+
     # get_date_num(test_url, date_pattern)
-    
-    with open('new_house_sell.csv',mode='w', newline='', encoding='utf-8') as csv_file:
+
+    with open('new_house_sell_3.csv', mode='w', newline='', encoding='utf-8') as csv_file:
         csv_writer = csv.writer(csv_file)
-    
+
         for url in urls:
             date, num = get_date_num(url, date_pattern)
             logging.info("date: %s, num: %s", date, num)
             csv_writer.writerow([date, num])
             time.sleep(0.5)
-        
